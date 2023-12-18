@@ -9,20 +9,16 @@
   -moz-box-shadow: -1px 1px 19px 0px rgba(0, 0, 0, 0.75);
   box-shadow: -1px 1px 19px 0px rgba(0, 0, 0, 0.75);
 }
-.haveAnAccount {
-  border: 1px solid rgba(0, 0, 0, 0.393);
-  padding: 5px;
-  margin: 5px;
-  border-radius: 10px;
-  background: rgba(68, 177, 68, 0.393);
-}
-.login {
+.forgot {
   text-decoration: underline;
   color: blue;
   cursor: pointer;
 }
-@media screen and (max-width: 700px) {
-  form {
-    background-color: rgba(0, 128, 0, 0.274);
-  }
+.email {
+  background: black;
+  color: white;
+}
+.password {
+  background: black;
+  color: white;
 }

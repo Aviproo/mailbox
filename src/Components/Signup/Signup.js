@@ -2,8 +2,10 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import classes from "./Signup.module.css";
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
@@ -41,7 +43,7 @@ const SignUp = () => {
         if (res.ok) {
           return res.json().then((data) => {
             alert("You have succesfully signup");
-            console.log(email, password, confirmPassword);
+            navigate("login");
           });
         } else {
           return res.json().then((data) => {
@@ -79,7 +81,10 @@ const SignUp = () => {
           Sign Up
         </Button>
         <div className={classes.haveAnAccount}>
-          Have an account? <span>Login</span>
+          Have an account?{" "}
+          <span onClick={() => navigate("login")} className={classes.login}>
+            Login
+          </span>
         </div>
       </Form>
     </div>
