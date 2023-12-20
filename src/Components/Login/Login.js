@@ -8,6 +8,7 @@ const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [validation, setValidation] = useState(false);
+
   const submitHandler = (event) => {
     event.preventDefault();
     const email = emailRef.current.value;
@@ -36,7 +37,8 @@ const Login = () => {
         if (res.ok) {
           return res.json().then((data) => {
             alert("You have succesfully loggedIn");
-            navigate("emailform");
+            localStorage.setItem("email", data.email);
+            navigate("inbox");
             setTimeout(() => {
               alert(`Welcome to mailbox`);
             }, 300);

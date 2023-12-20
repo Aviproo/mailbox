@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+}
+.leftSide {
+  width: 20%;
+  background: rgba(69, 9, 69, 0.315);
+}
+.rightSide {
+  width: 80%;
+}
+.mail {
+  padding: 10px;
+}
+.input {
+  background: rgba(69, 9, 69, 0.315);
+  padding: 10px;
+}
+.compose {
+  width: 100%;
+}
+.composeBtn {
+  width: 80%;
+}
+.inboxDivs div {
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.171);
+  margin: 5px;
+  border-radius: 10px;
+}
+.inbox {
+  font-size: 15px;
+  font-weight: 700;
+}
