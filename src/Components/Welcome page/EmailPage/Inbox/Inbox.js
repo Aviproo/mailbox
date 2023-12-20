@@ -8,6 +8,11 @@ const Inbox = () => {
   const navigate = useNavigate();
   const [mail, setMail] = useState([]);
 
+  const logoutHandler = () => {
+    localStorage.removeItem("email");
+    navigate("/");
+  };
+
   useEffect(() => {
     const emailId = localStorage.getItem("email");
     let userid = "";
@@ -22,15 +27,27 @@ const Inbox = () => {
         let mailData = await axios.get(
           `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}.json`
         );
-        console.log(Object.values(mailData.data));
-        setMail(mailData.data);
-        console.log(mail);
+        setMail(Object.values(mailData.data));
       };
       getData();
     } catch (err) {
       console.log(err);
     }
   }, []);
+  console.log(mail.length);
+  const show = <div>Nothing received</div>;
+  const mailItems = (
+    <div>
+      {mail.map((item) => {
+        return (
+          <div className={classes.item} key={Math.random()}>
+            <div className={classes.email}>{item.email}</div>
+            <div className={classes.subject}>{item.subject}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
   return (
     <>
       <div className={classes.container}>
@@ -63,8 +80,9 @@ const Inbox = () => {
           <div className={classes.input}>
             <input />
             <Button>Search</Button>
+            <Button onClick={logoutHandler}>logout</Button>
           </div>
-          <div>Your mail are Here</div>
+          <div>{mail.length == 0 ? show : mailItems}</div>
         </div>
       </div>
     </>
