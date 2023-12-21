@@ -55,8 +55,8 @@ const Login = () => {
     <div>
       <Form className={classes.form} onSubmit={submitHandler}>
         <h4>Login</h4>
-        <Form.Group className="mb-4" controlId="formBasicEmail">
-          <Form.Control type="email" placeholder="Enter email" ref={emailRef} />
+        <Form.Group className="mb-4">
+          <Form.Control t placeholder="Enter email" ref={emailRef} />
         </Form.Group>
 
         <Form.Group className="mb-3">

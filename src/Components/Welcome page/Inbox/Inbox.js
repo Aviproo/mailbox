@@ -7,47 +7,89 @@ import axios from "axios";
 const Inbox = () => {
   const navigate = useNavigate();
   const [mail, setMail] = useState([]);
+  const [check, setCheck] = useState(false);
 
   const logoutHandler = () => {
     localStorage.removeItem("email");
     navigate("/");
   };
+  console.log(mail);
+  let userid = "";
+  const emailId = localStorage.getItem("email");
+
+  for (let i = 0; i < emailId.length; i++) {
+    if (emailId[i] == "@" || emailId[i] == ".") {
+      continue;
+    }
+    userid += emailId[i];
+  }
 
   useEffect(() => {
-    const emailId = localStorage.getItem("email");
-    let userid = "";
-    for (let i = 0; i < emailId.length; i++) {
-      if (emailId[i] == "@" || emailId[i] == ".") {
-        continue;
-      }
-      userid += emailId[i];
-    }
     try {
       const getData = async () => {
         let mailData = await axios.get(
           `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}.json`
         );
-        setMail(Object.values(mailData.data));
+        console.log();
+        if (mailData.data != null) {
+          setCheck(true);
+          setMail(Object.entries(mailData.data));
+        }
       };
       getData();
     } catch (err) {
       console.log(err);
     }
   }, []);
-  console.log(mail.length);
-  const show = <div>Nothing received</div>;
+
+  const deleteHandler = async (id) => {
+    const response = await axios.delete(
+      `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}/${id}.json`
+    );
+
+    try {
+      const getData = async () => {
+        let mailData = await axios.get(
+          `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}.json`
+        );
+        console.log();
+        if (mailData.data != null) {
+          setCheck(true);
+          setMail(Object.entries(mailData.data));
+        }
+      };
+      getData();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const show = <div>Loading..</div>;
+
   const mailItems = (
     <div>
       {mail.map((item) => {
         return (
           <div className={classes.item} key={Math.random()}>
-            <div className={classes.email}>{item.email}</div>
-            <div className={classes.subject}>{item.subject}</div>
+            <div
+              className={classes.email}
+              onClick={() => navigate(`${item[1].description}`)}
+            >
+              {item[1].email}
+            </div>
+            <div
+              className={classes.subject}
+              onClick={() => navigate(`${item[1].description}`)}
+            >
+              {item[1].subject}
+            </div>
+            <Button onClick={() => deleteHandler(item[0])}>Delete</Button>
           </div>
         );
       })}
     </div>
   );
+
   return (
     <>
       <div className={classes.container}>
@@ -80,9 +122,11 @@ const Inbox = () => {
           <div className={classes.input}>
             <input />
             <Button>Search</Button>
+            <h4>{localStorage.getItem("email")}</h4>
             <Button onClick={logoutHandler}>logout</Button>
           </div>
-          <div>{mail.length == 0 ? show : mailItems}</div>
+          <div>{check && mailItems}</div>
+          <div>{!check && show}</div>
         </div>
       </div>
     </>
