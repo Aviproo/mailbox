@@ -42,7 +42,7 @@ const EmailForm = () => {
       const sentMail = await axios.post(
         `https://ecom-3c668-default-rtdb.firebaseio.com/${userEmailId}_sent.json`,
         {
-          email: localStorage.getItem("email"),
+          email: emailRef.current.value,
           subject: subjectRef.current.value,
           description: descriptionRef.current.value,
         }

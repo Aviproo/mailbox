@@ -9,7 +9,6 @@ const Inbox = () => {
   const [mail, setMail] = useState([]);
   const [check, setCheck] = useState(false);
   const [item, setItem] = useState(false);
-  const [sent, setSent] = useState([]);
 
   const logoutHandler = () => {
     localStorage.removeItem("email");
@@ -68,45 +67,6 @@ const Inbox = () => {
     }
   };
 
-  const sentHandler = async () => {
-    // navigate(`${item[1].description}`);
-    const userEmail = localStorage.getItem("email");
-    let userEmailId = "";
-    for (let i = 0; i < userEmail.length; i++) {
-      if (userEmail[i] == "@" || userEmail[i] == ".") {
-        continue;
-      }
-      userEmailId += userEmail[i];
-    }
-    const getMail = await axios.get(
-      `https://ecom-3c668-default-rtdb.firebaseio.com/${userEmailId}_sent.json`
-    );
-    setSent(Object.entries(getMail.data));
-    console.log(sent);
-    // const mailItems = (
-    //   <div>
-    //     {sent.map((item) => {
-    //       return (
-    //         <div className={classes.item} key={Math.random()}>
-    //           <div
-    //             className={classes.email}
-    //             onClick={() => navigate(`${item[1].description}`)}
-    //           >
-    //             {item[1].email}
-    //           </div>
-    //           <div className={classes.subject} onClick={sentHandler}>
-    //             {item[1].subject}
-    //           </div>
-    //           <Button onClick={() => deleteHandler(item[0])}>Delete</Button>
-    //         </div>
-    //       );
-    //     })}
-    //   </div>
-    // );
-    // console.log(sent);
-    // navigate(`${sent[1]}`);
-  };
-
   const show = <div>Loading...</div>;
   const itemNotFOund = <div>No mails</div>;
 
@@ -121,7 +81,10 @@ const Inbox = () => {
             >
               {item[1].email}
             </div>
-            <div className={classes.subject} onClick={sentHandler}>
+            <div
+              className={classes.subject}
+              onClick={() => navigate(`${item[1].description}`)}
+            >
               {item[1].subject}
             </div>
             <Button onClick={() => deleteHandler(item[0])}>Delete</Button>
@@ -153,7 +116,7 @@ const Inbox = () => {
             <div>Unread</div>
             <div>Starred</div>
             <div>Draft</div>
-            <div onClick={sentHandler}>Sent</div>
+            <div onClick={() => navigate("sent")}>Sent</div>
             <div>Archive</div>
             <div>Spam</div>
             <div>Deleted</div>
