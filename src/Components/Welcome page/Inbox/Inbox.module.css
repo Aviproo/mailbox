@@ -30,6 +30,10 @@
   border: 1px solid rgba(0, 0, 0, 0.171);
   margin: 5px;
   border-radius: 10px;
+  cursor: pointer;
+}
+.inboxDivs div:hover {
+  background: rgb(104, 159, 180);
 }
 .inbox {
   font-size: 15px;
@@ -48,6 +52,7 @@
   margin: 2px;
   padding-left: 5px;
 }
+
 .email {
   text-align: start;
   width: 20%;

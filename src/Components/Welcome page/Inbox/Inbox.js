@@ -8,12 +8,14 @@ const Inbox = () => {
   const navigate = useNavigate();
   const [mail, setMail] = useState([]);
   const [check, setCheck] = useState(false);
+  const [item, setItem] = useState(false);
+  const [sent, setSent] = useState([]);
 
   const logoutHandler = () => {
     localStorage.removeItem("email");
     navigate("/");
   };
-  console.log(mail);
+
   let userid = "";
   const emailId = localStorage.getItem("email");
 
@@ -30,9 +32,11 @@ const Inbox = () => {
         let mailData = await axios.get(
           `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}.json`
         );
-        console.log();
-        if (mailData.data != null) {
+        if (mailData.data == null) {
+          setItem(true);
+        } else {
           setCheck(true);
+          setItem(false);
           setMail(Object.entries(mailData.data));
         }
       };
@@ -64,7 +68,47 @@ const Inbox = () => {
     }
   };
 
-  const show = <div>Loading..</div>;
+  const sentHandler = async () => {
+    // navigate(`${item[1].description}`);
+    const userEmail = localStorage.getItem("email");
+    let userEmailId = "";
+    for (let i = 0; i < userEmail.length; i++) {
+      if (userEmail[i] == "@" || userEmail[i] == ".") {
+        continue;
+      }
+      userEmailId += userEmail[i];
+    }
+    const getMail = await axios.get(
+      `https://ecom-3c668-default-rtdb.firebaseio.com/${userEmailId}_sent.json`
+    );
+    setSent(Object.entries(getMail.data));
+    console.log(sent);
+    // const mailItems = (
+    //   <div>
+    //     {sent.map((item) => {
+    //       return (
+    //         <div className={classes.item} key={Math.random()}>
+    //           <div
+    //             className={classes.email}
+    //             onClick={() => navigate(`${item[1].description}`)}
+    //           >
+    //             {item[1].email}
+    //           </div>
+    //           <div className={classes.subject} onClick={sentHandler}>
+    //             {item[1].subject}
+    //           </div>
+    //           <Button onClick={() => deleteHandler(item[0])}>Delete</Button>
+    //         </div>
+    //       );
+    //     })}
+    //   </div>
+    // );
+    // console.log(sent);
+    // navigate(`${sent[1]}`);
+  };
+
+  const show = <div>Loading...</div>;
+  const itemNotFOund = <div>No mails</div>;
 
   const mailItems = (
     <div>
@@ -77,10 +121,7 @@ const Inbox = () => {
             >
               {item[1].email}
             </div>
-            <div
-              className={classes.subject}
-              onClick={() => navigate(`${item[1].description}`)}
-            >
+            <div className={classes.subject} onClick={sentHandler}>
               {item[1].subject}
             </div>
             <Button onClick={() => deleteHandler(item[0])}>Delete</Button>
@@ -112,7 +153,7 @@ const Inbox = () => {
             <div>Unread</div>
             <div>Starred</div>
             <div>Draft</div>
-            <div>Sent</div>
+            <div onClick={sentHandler}>Sent</div>
             <div>Archive</div>
             <div>Spam</div>
             <div>Deleted</div>
@@ -125,8 +166,8 @@ const Inbox = () => {
             <h4>{localStorage.getItem("email")}</h4>
             <Button onClick={logoutHandler}>logout</Button>
           </div>
-          <div>{check && mailItems}</div>
-          <div>{!check && show}</div>
+          <div>{item && itemNotFOund}</div>
+          <div>{!item && !check ? show : mailItems}</div>
         </div>
       </div>
     </>

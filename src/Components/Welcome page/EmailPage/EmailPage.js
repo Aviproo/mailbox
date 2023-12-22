@@ -8,14 +8,13 @@ const EmailForm = () => {
   const subjectRef = useRef();
   const descriptionRef = useRef();
   const userEmail = localStorage.getItem("email");
-
-  const getData = async () => {
-    let mailData = await axios.get(
-      `https://ecom-3c668-default-rtdb.firebaseio.com/agmailcom.json`
-    );
-    console.log(Object.values(mailData.data));
-  };
-
+  let userEmailId = "";
+  for (let i = 0; i < userEmail.length; i++) {
+    if (userEmail[i] == "@" || userEmail[i] == ".") {
+      continue;
+    }
+    userEmailId += userEmail[i];
+  }
   const sendMail = async () => {
     let userId = "";
     for (let i = 0; i < emailRef.current.value.length; i++) {
@@ -37,10 +36,17 @@ const EmailForm = () => {
           description: descriptionRef.current.value,
         }
       );
-
       if (response.statusText == "OK") {
         alert("message sent successfully");
       }
+      const sentMail = await axios.post(
+        `https://ecom-3c668-default-rtdb.firebaseio.com/${userEmailId}_sent.json`,
+        {
+          email: localStorage.getItem("email"),
+          subject: subjectRef.current.value,
+          description: descriptionRef.current.value,
+        }
+      );
     } catch (err) {
       console.log(err);
     }
@@ -58,7 +64,6 @@ const EmailForm = () => {
           <input placeholder="This is a mail test" ref={descriptionRef} />
         </div>
         <Button onClick={sendMail}>Send</Button>
-        <Button onClick={getData}>Get data</Button>
       </div>
     </>
   );

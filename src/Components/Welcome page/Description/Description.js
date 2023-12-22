@@ -28,7 +28,7 @@ const Description = () => {
             </div>
             <div className={classes.inboxDivs}>
               <div className={classes.inbox}>
-                Inbox <sup>{""}</sup>
+                Inbox <sup></sup>
               </div>
               <div>Unread</div>
               <div>Starred</div>
