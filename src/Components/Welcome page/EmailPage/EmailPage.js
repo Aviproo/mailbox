@@ -29,7 +29,7 @@ const EmailForm = () => {
 
     try {
       const response = await axios.post(
-        `https://ecom-3c668-default-rtdb.firebaseio.com/${userId}.json`,
+        `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userId}.json`,
         {
           email: localStorage.getItem("email"),
           subject: subjectRef.current.value,
@@ -40,7 +40,7 @@ const EmailForm = () => {
         alert("message sent successfully");
       }
       const sentMail = await axios.post(
-        `https://ecom-3c668-default-rtdb.firebaseio.com/${userEmailId}_sent.json`,
+        `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userEmailId}_sent.json`,
         {
           email: emailRef.current.value,
           subject: subjectRef.current.value,

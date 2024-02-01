@@ -8,7 +8,6 @@ const Inbox = () => {
   const navigate = useNavigate();
   const [mail, setMail] = useState([]);
   const [check, setCheck] = useState(false);
-  const [item, setItem] = useState(false);
 
   const logoutHandler = () => {
     localStorage.removeItem("email");
@@ -29,13 +28,12 @@ const Inbox = () => {
     try {
       const getData = async () => {
         let mailData = await axios.get(
-          `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}.json`
+          `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userid}.json`
         );
+        console.log(mailData);
         if (mailData.data == null) {
-          setItem(true);
-        } else {
           setCheck(true);
-          setItem(false);
+        } else {
           setMail(Object.entries(mailData.data));
         }
       };
@@ -47,17 +45,18 @@ const Inbox = () => {
 
   const deleteHandler = async (id) => {
     const response = await axios.delete(
-      `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}/${id}.json`
+      `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userid}/${id}.json`
     );
+    alert("Message deleted Sussesfully");
 
     try {
       const getData = async () => {
         let mailData = await axios.get(
-          `https://ecom-3c668-default-rtdb.firebaseio.com/${userid}.json`
+          `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userid}.json`
         );
-        console.log();
-        if (mailData.data != null) {
+        if (mailData.data == null) {
           setCheck(true);
+        } else {
           setMail(Object.entries(mailData.data));
         }
       };
@@ -67,7 +66,6 @@ const Inbox = () => {
     }
   };
 
-  const show = <div>Loading...</div>;
   const itemNotFOund = <div>No mails</div>;
 
   const mailItems = (
@@ -129,8 +127,8 @@ const Inbox = () => {
             <h4>{localStorage.getItem("email")}</h4>
             <Button onClick={logoutHandler}>logout</Button>
           </div>
-          <div>{item && itemNotFOund}</div>
-          <div>{!item && !check ? show : mailItems}</div>
+
+          {check ? itemNotFOund : mailItems}
         </div>
       </div>
     </>

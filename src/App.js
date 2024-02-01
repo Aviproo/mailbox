@@ -10,7 +10,7 @@ import SentMail from "./Components/Welcome page/SentMail/SentMail";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App " id="responsive-off">
       <Routes>
         <Route path="/" element={<SignUp />} />
         <Route path="login" element={<Login />} />

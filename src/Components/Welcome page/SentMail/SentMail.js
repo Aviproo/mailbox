@@ -6,32 +6,60 @@ import axios from "axios";
 
 const SentMail = () => {
   const [sent, setSent] = useState([]);
+  const [check, setCheck] = useState(false);
   const navigate = useNavigate();
 
   const logoutHandler = () => {
     localStorage.removeItem("email");
     navigate("/");
   };
+  const userEmail = localStorage.getItem("email");
+  let userEmailId = "";
+  for (let i = 0; i < userEmail.length; i++) {
+    if (userEmail[i] == "@" || userEmail[i] == ".") {
+      continue;
+    }
+    userEmailId += userEmail[i];
+  }
+
   useEffect(() => {
     const getSentData = async () => {
-      const userEmail = localStorage.getItem("email");
-      let userEmailId = "";
-      for (let i = 0; i < userEmail.length; i++) {
-        if (userEmail[i] == "@" || userEmail[i] == ".") {
-          continue;
-        }
-        userEmailId += userEmail[i];
-      }
       const getMail = await axios.get(
-        `https://ecom-3c668-default-rtdb.firebaseio.com/${userEmailId}_sent.json`
+        `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userEmailId}_sent.json`
       );
-      console.log(getMail);
-      setSent(Object.entries(getMail.data));
-      console.log(sent);
+      if (getMail.data == null) {
+        setCheck(true);
+      } else {
+        setSent(Object.entries(getMail.data));
+      }
     };
     getSentData();
   }, []);
 
+  const deleteHandler = async (id) => {
+    const response = await axios.delete(
+      `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userEmailId}_sent/${id}.json`
+    );
+    alert("message deleted Successfully");
+    try {
+      const getData = async () => {
+        let mailData = await axios.get(
+          `https://ecomapp-3b7b4-default-rtdb.firebaseio.com/${userEmailId}_sent.json`
+        );
+
+        if (mailData.data == null) {
+          setCheck(true);
+        } else {
+          setSent(Object.entries(mailData.data));
+        }
+      };
+      getData();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const noMessage = <div>No sent Messages</div>;
   const mailItems = (
     <div>
       {sent.map((item) => {
@@ -39,6 +67,13 @@ const SentMail = () => {
           <div className={classes.item} key={Math.random()}>
             <div className={classes.email}>{item[1].email}</div>
             <div className={classes.subject}>{item[1].subject}</div>
+            <Button
+              onClick={() => {
+                deleteHandler(item[0]);
+              }}
+            >
+              Delete
+            </Button>
           </div>
         );
       })}
@@ -62,13 +97,16 @@ const SentMail = () => {
               </Button>
             </div>
             <div className={classes.inboxDivs}>
-              <div className={classes.inbox}>
+              <div className={classes.inbox} onClick={() => navigate(-1)}>
                 Inbox <sup></sup>
               </div>
               <div>Unread</div>
               <div>Starred</div>
               <div>Draft</div>
-              <div>Sent</div>
+              <div>
+                Sent
+                <sup style={{ fontWeight: "700" }}>{sent.length}</sup>
+              </div>
               <div>Archive</div>
               <div>Spam</div>
               <div>Deleted</div>
@@ -81,7 +119,7 @@ const SentMail = () => {
               <h4>{localStorage.getItem("email")}</h4>
               <Button onClick={logoutHandler}>logout</Button>
             </div>
-            {mailItems}
+            {check ? noMessage : mailItems}
           </div>
         </div>
       </>
